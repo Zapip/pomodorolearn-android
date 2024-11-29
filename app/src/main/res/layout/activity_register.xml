@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Register"
-        android:fontFamily="@font/pbold"
+        android:fontFamily="@font/poppins_bold"
         android:textColor="@color/white"
         android:textSize="30sp"
         android:textStyle="bold" />
@@ -29,7 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Email"
-            android:fontFamily="@font/preg"
+            android:fontFamily="@font/poppins_regular"
             android:textSize="11dp"
             android:textColor="@color/transparent_white" />
 
@@ -51,7 +51,7 @@
             android:layout_height="wrap_content"
             android:text="Password"
             android:textSize="11dp"
-            android:fontFamily="@font/preg"
+            android:fontFamily="@font/poppins_regular"
             android:textColor="@color/transparent_white" />
 
         <EditText
@@ -75,7 +75,7 @@
             android:text="Register"
             android:textAllCaps="false"
             android:textSize="14dp"
-            android:fontFamily="@font/preg"
+            android:fontFamily="@font/poppins_regular"
             android:textColor="@color/white" />
 
         <TextView
@@ -84,7 +84,7 @@
             android:padding="10dp"
             android:text="Or register with"
             android:textSize="10dp"
-            android:fontFamily="@font/preg"
+            android:fontFamily="@font/poppins_regular"
             android:textAlignment="center"
             android:textColor="@color/transparent_white" />
 
@@ -122,7 +122,7 @@
                 android:padding="5dp"
                 android:text="Have any account?"
                 android:textSize="10dp"
-                android:fontFamily="@font/preg"
+                android:fontFamily="@font/poppins_regular"
                 android:textAlignment="center"
                 android:textColor="@color/transparent_white" />
 
@@ -131,7 +131,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/blueLink"
-                android:fontFamily="@font/preg"
+                android:fontFamily="@font/poppins_regular"
                 android:textSize="10dp"
                 android:text="Login"
                 android:clickable="true"
