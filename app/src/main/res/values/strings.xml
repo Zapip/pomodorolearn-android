@@ -2,4 +2,10 @@
 <resources>
     <string name="app_name">pomodorolearn</string>
     <string name="forgot_password">Forgot Password?</string>
+    <string name="qoutes_api">Saatnya Fokus!!!</string>
+    <string name="controller">Pause</string>
+    <string name="pomodoro">Pomodoro</string>
+    <string name="short_break">Short Break</string>
+    <string name="long_break">Long Break</string>
+    <string name="timer">24:30</string>
 </resources>
