@@ -6,4 +6,5 @@
     <color name="button">#1E4187</color>
     <color name="blueLink">#4A83DA</color>
     <color name="transparent_white">#80FFFFFF</color>
+    <color name="transparent">#00000000</color>
 </resources>
