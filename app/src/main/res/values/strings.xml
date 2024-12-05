@@ -8,4 +8,5 @@
     <string name="short_break">Short Break</string>
     <string name="long_break">Long Break</string>
     <string name="timer">24:30</string>
+    <string name="add_task">Add Task</string>
 </resources>
