@@ -15,6 +15,9 @@
         android:theme="@style/Base.Theme.Pomodorolearn"
         tools:targetApi="31">
         <activity
+            android:name=".Task"
+            android:exported="false" />
+        <activity
             android:name=".MainFeatures"
             android:exported="false" />
         <activity

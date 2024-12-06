@@ -1,17 +1,19 @@
 package com.example.pomodorolearn;
 
-
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-
 import android.os.CountDownTimer;
 import android.widget.Button;
 import android.widget.ImageButton;
-
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -20,6 +22,8 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainFeatures extends AppCompatActivity {
     private TextView title;
@@ -40,12 +44,37 @@ public class MainFeatures extends AppCompatActivity {
     private final int shortBreakTime = 5 * 60 * 1000; // 5 minutes in milliseconds
     private final int longBreakTime = 15 * 60 * 1000; // 15 minutes in milliseconds
     private int currentInterval = 0; // Number of completed Pomodoro sessions
-    private int currentTimeLeft = pomodoroTime; // Remaining time in milliseconds
+    private int currentTimeLeft = pomodoroTime;
+
+    private RecyclerView taskRecyclerView;
+    private TaskAdapter taskAdapter;
+    private List<Task> taskList;
+
+    private FirebaseFirestore db;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_features);
+
+        db = FirebaseFirestore.getInstance();
+
+        // Inisialisasi RecyclerView
+        taskRecyclerView = findViewById(R.id.task_recycler_view);
+        taskRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        taskList = new ArrayList<>();
+        taskAdapter = new TaskAdapter(taskList);
+        taskRecyclerView.setAdapter(taskAdapter);
+
+        // Tombol Tambah Tugas
+        findViewById(R.id.add_task_button).setOnClickListener(v -> {
+            taskList.add(new Task("Tugas Baru", false));
+            taskAdapter.notifyItemInserted(taskList.size() - 1);
+        });
+
+        fetchTasksFromFirestore();
 
         // Initialize views
         timerDisplay = findViewById(R.id.timer_display);
@@ -54,11 +83,13 @@ public class MainFeatures extends AppCompatActivity {
         btnLongBreak = findViewById(R.id.btn_long_break);
         btnPause = findViewById(R.id.btn_pause);
         btnSkip = findViewById(R.id.btn_skip);
+        title = findViewById(R.id.title);
 
         // Set initial states
-        updateTimerDisplay(pomodoroTime); // Set timer display to 25:00
+        updateTimerDisplay(pomodoroTime);
         btnPause.setText("Mulai");
-        setActiveButton(btnPomodoro);
+        setActiveButton(btnPomodoro); // Highlight tombol Pomodoro
+        updateTitleBasedOnState(); // Ambil quote dari API jika waktu belum berjalan
 
         // Pause/Start button functionality
         btnPause.setOnClickListener(view -> {
@@ -69,82 +100,40 @@ public class MainFeatures extends AppCompatActivity {
             }
         });
 
-
-        title = findViewById(R.id.title);
-
-//        do {
-//            if (isPomodoroActive && isTimerRunning) {
-//                title.setText("Saatnya Fokus Coy");
-//            } else if (isShortBreakActive && isTimerRunning) {
-//                title.setText("Istirahat Sejenak Coy");
-//            } else if (isLongBreakActive && isTimerRunning) {
-//                title.setText("Istirahat Panjang Coy");
-//            } else {
-//                final Handler handler = new Handler();
-//                Runnable runnable = new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        new GetQuoteTask().execute(API_URL);
-//                        handler.postDelayed(this, 60000); // 60 seconds
-//                    }
-//                };
-//                handler.post(runnable);
-//            }
-//
-//        } while (isTimerRunning = true);
-
         // Skip button functionality
         btnSkip.setOnClickListener(view -> skipTimer());
     }
 
-    private class GetQuoteTask extends AsyncTask<String, Void, String> {
+    private void fetchTasksFromFirestore() {
+        db.collection("tasks")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        QuerySnapshot querySnapshot = task.getResult();
+                        if (querySnapshot != null) {
+                            taskList.clear(); // Bersihkan list sebelum menambahkan data baru
+                            for (DocumentSnapshot document : querySnapshot) {
+                                String id = document.getId(); // Dapatkan ID dokumen
+                                String title = document.getString("name_task");
+                                boolean isCompleted = document.getBoolean("is_complete") != null
+                                        ? document.getBoolean("is_complete")
+                                        : false;
 
-        @Override
-        protected String doInBackground(String... urls) {
-            String result = "";
-            try {
-                URL url = new URL(urls[0]);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestProperty("accept", "application/json");
-                connection.setRequestProperty("X-Api-Key", API_KEY); // Menambahkan header API key
-
-                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                StringBuilder stringBuilder = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    stringBuilder.append(line);
-                }
-                reader.close();
-
-                // Parse the response string as JSON
-                JSONArray responseArray = new JSONArray(stringBuilder.toString());
-                // Ambil quote pertama dalam array
-                JSONObject firstQuote = responseArray.getJSONObject(0);
-                result = firstQuote.getString("quote");
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return result;
-        }
-
-        @Override
-        protected void onPostExecute(String quote) {
-            super.onPostExecute(quote);
-            // Set the quote to the TextView
-            if (quote != null && !quote.isEmpty()) {
-                title.setText("“" + quote + "”");
-                title.setTextSize(12);
-            } else {
-                title.setText("No quote available.");
-            }
-        }
-
+                                // Tambahkan tugas ke daftar
+                                taskList.add(new Task(id, title, isCompleted));
+                            }
+                            taskAdapter.notifyDataSetChanged(); // Perbarui RecyclerView
+                        }
+                    } else {
+                        System.err.println("Error fetching tasks: " + task.getException());
+                    }
+                });
     }
 
     private void startTimer() {
         btnPause.setText("Pause");
         isTimerRunning = true;
+        updateTitleBasedOnState(); // Update title berdasarkan state aktif
 
         timer = new CountDownTimer(currentTimeLeft, 1000) {
             @Override
@@ -209,12 +198,13 @@ public class MainFeatures extends AppCompatActivity {
             isPomodoroActive = true;
             isShortBreakActive = false;
             isLongBreakActive = false;
-            currentTimeLeft = pomodoroTime;
             currentInterval = 0; // Reset interval count for a new cycle
+            currentTimeLeft = pomodoroTime;
             setActiveButton(btnPomodoro);
         }
         updateTimerDisplay(currentTimeLeft);
         btnPause.setText("Mulai");
+        updateTitleBasedOnState();
     }
 
     private void setActiveButton(TextView activeButton) {
@@ -240,13 +230,69 @@ public class MainFeatures extends AppCompatActivity {
         timerDisplay.setText(timeFormatted);
     }
 
+    private void updateTitleBasedOnState() {
+        if (!isTimerRunning) {
+            if (isPomodoroActive) {
+                // Ambil quote dari API
+                new GetQuoteTask().execute(API_URL);
+            }
+        } else {
+            if (isPomodoroActive) {
+                title.setText("Saatnya Fokus");
+                title.setTextSize(20);
+            } else if (isShortBreakActive) {
+                title.setText("Istirahat Sejenak");
+                title.setTextSize(20);
+            } else if (isLongBreakActive) {
+                title.setText("Istirahat Panjang");
+                title.setTextSize(20);
+            }
+        }
+    }
+
+    private class GetQuoteTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+            String result = "";
+            try {
+                URL url = new URL(urls[0]);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestProperty("accept", "application/json");
+                connection.setRequestProperty("X-Api-Key", API_KEY); // Menambahkan header API key
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                StringBuilder stringBuilder = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    stringBuilder.append(line);
+                }
+                reader.close();
+
+                JSONArray responseArray = new JSONArray(stringBuilder.toString());
+                JSONObject firstQuote = responseArray.getJSONObject(0);
+                result = firstQuote.getString("quote");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(String quote) {
+            if (quote != null && !quote.isEmpty()) {
+                title.setText("“" + quote + "”");
+                title.setTextSize(15);
+            } else {
+                title.setText("No quote available.");
+            }
+        }
+    }
+
     @Override
     protected void onDestroy() {
-
         if (timer != null) {
             timer.cancel();
         }
         super.onDestroy();
-
     }
 }

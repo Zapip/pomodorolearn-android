@@ -92,7 +92,7 @@
                 android:padding="4sp"
                 android:text="@string/pomodoro"
                 android:textAlignment="center"
-                android:textColor="#00FF00"
+                android:textColor="#FFFFFF"
                 android:textSize="16sp" />
 
             <TextView
@@ -218,7 +218,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:clipToPadding="false"
-        android:paddingBottom="16dp" />
+        android:paddingBottom="16dp"
+        android:scrollbars="vertical"/>
 
     <Button
         android:id="@+id/add_task_button"
