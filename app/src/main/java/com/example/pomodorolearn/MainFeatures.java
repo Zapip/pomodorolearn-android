@@ -21,9 +21,9 @@ public class MainFeatures extends AppCompatActivity {
     private boolean isShortBreakActive = false;
     private boolean isLongBreakActive = false;
 
-    private int pomodoroTime = 25 * 60 * 1000; // 25 minutes in milliseconds
-    private int shortBreakTime = 5 * 60 * 1000; // 5 minutes in milliseconds
-    private int longBreakTime = 15 * 60 * 1000; // 15 minutes in milliseconds
+    private final int pomodoroTime = 25 * 60 * 1000; // 25 minutes in milliseconds
+    private final int shortBreakTime = 5 * 60 * 1000; // 5 minutes in milliseconds
+    private final int longBreakTime = 15 * 60 * 1000; // 15 minutes in milliseconds
     private int currentInterval = 0; // Number of completed Pomodoro sessions
     private int currentTimeLeft = pomodoroTime; // Remaining time in milliseconds
 
@@ -99,26 +99,34 @@ public class MainFeatures extends AppCompatActivity {
         if (isPomodoroActive) {
             currentInterval++;
             if (currentInterval >= 4) {
-                // Switch to Long Break
+                // Switch to Long Break after 4 Pomodoro intervals
                 isPomodoroActive = false;
                 isShortBreakActive = false;
                 isLongBreakActive = true;
                 currentTimeLeft = longBreakTime;
                 setActiveButton(btnLongBreak);
             } else {
-                // Switch to Short Break
+                // Switch to Short Break after each Pomodoro
                 isPomodoroActive = false;
                 isShortBreakActive = true;
                 isLongBreakActive = false;
                 currentTimeLeft = shortBreakTime;
                 setActiveButton(btnShortBreak);
             }
-        } else if (isShortBreakActive || isLongBreakActive) {
-            // Reset to Pomodoro
+        } else if (isShortBreakActive) {
+            // Reset to Pomodoro after Short Break
             isPomodoroActive = true;
             isShortBreakActive = false;
             isLongBreakActive = false;
             currentTimeLeft = pomodoroTime;
+            setActiveButton(btnPomodoro);
+        } else if (isLongBreakActive) {
+            // Reset to Pomodoro and restart the cycle after Long Break
+            isPomodoroActive = true;
+            isShortBreakActive = false;
+            isLongBreakActive = false;
+            currentTimeLeft = pomodoroTime;
+            currentInterval = 0; // Reset interval count for a new cycle
             setActiveButton(btnPomodoro);
         }
         updateTimerDisplay(currentTimeLeft);
