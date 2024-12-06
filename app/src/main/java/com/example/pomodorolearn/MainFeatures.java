@@ -37,13 +37,12 @@ public class MainFeatures extends AppCompatActivity {
 
         title = findViewById(R.id.title);
 
-        // Update quotes every 15 seconds
         final Handler handler = new Handler();
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 new GetQuoteTask().execute(API_URL);
-                handler.postDelayed(this, 45000); // 45 seconds
+                handler.postDelayed(this, 60000); // 45 seconds
             }
         };
         handler.post(runnable);
