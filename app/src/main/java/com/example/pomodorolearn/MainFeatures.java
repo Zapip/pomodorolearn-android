@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import android.os.CountDownTimer;
-import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 
@@ -74,16 +72,31 @@ public class MainFeatures extends AppCompatActivity {
 
         title = findViewById(R.id.title);
 
-        final Handler handler = new Handler();
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                new GetQuoteTask().execute(API_URL);
-                handler.postDelayed(this, 60000); // 60 seconds
-            }
-        };
-        handler.post(runnable);
+//        do {
+//            if (isPomodoroActive && isTimerRunning) {
+//                title.setText("Saatnya Fokus Coy");
+//            } else if (isShortBreakActive && isTimerRunning) {
+//                title.setText("Istirahat Sejenak Coy");
+//            } else if (isLongBreakActive && isTimerRunning) {
+//                title.setText("Istirahat Panjang Coy");
+//            } else {
+//                final Handler handler = new Handler();
+//                Runnable runnable = new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        new GetQuoteTask().execute(API_URL);
+//                        handler.postDelayed(this, 60000); // 60 seconds
+//                    }
+//                };
+//                handler.post(runnable);
+//            }
+//
+//        } while (isTimerRunning = true);
+
+        // Skip button functionality
+        btnSkip.setOnClickListener(view -> skipTimer());
     }
+
     private class GetQuoteTask extends AsyncTask<String, Void, String> {
 
         @Override
@@ -120,14 +133,13 @@ public class MainFeatures extends AppCompatActivity {
             super.onPostExecute(quote);
             // Set the quote to the TextView
             if (quote != null && !quote.isEmpty()) {
-                title.setText("“"+quote+"”");
+                title.setText("“" + quote + "”");
                 title.setTextSize(12);
             } else {
                 title.setText("No quote available.");
             }
         }
-        // Skip button functionality
-        btnSkip.setOnClickListener(view -> skipTimer());
+
     }
 
     private void startTimer() {
@@ -230,9 +242,11 @@ public class MainFeatures extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+
         if (timer != null) {
             timer.cancel();
         }
         super.onDestroy();
+
     }
 }
