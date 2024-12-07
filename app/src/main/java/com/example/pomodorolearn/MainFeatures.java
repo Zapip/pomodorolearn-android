@@ -25,6 +25,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.DialogInterface;
+import android.widget.EditText;
+import androidx.appcompat.app.AlertDialog;
+
 public class MainFeatures extends AppCompatActivity {
     private TextView title;
     private static final String API_URL = "https://api.api-ninjas.com/v1/quotes?category=learning";
@@ -68,11 +72,51 @@ public class MainFeatures extends AppCompatActivity {
         taskAdapter = new TaskAdapter(taskList);
         taskRecyclerView.setAdapter(taskAdapter);
 
-        // Tombol Tambah Tugas
         findViewById(R.id.add_task_button).setOnClickListener(v -> {
-            taskList.add(new Task("Tugas Baru", false));
-            taskAdapter.notifyItemInserted(taskList.size() - 1);
+            // Membuat EditText untuk input tugas
+            EditText input = new EditText(MainFeatures.this);
+            input.setHint("Input task here");
+
+            // Membuat AlertDialog untuk menambahkan tugas baru
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainFeatures.this);
+            builder.setTitle("Add New Task")
+                    .setView(input)
+                    .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            String taskTitle = input.getText().toString().trim();
+                            if (!taskTitle.isEmpty()) {
+                                // Instance Firestore
+                                FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+                                // Generate ID untuk dokumen baru
+                                String generatedId = db.collection("tasks").document().getId();
+
+                                // Membuat objek Task dengan ID
+                                Task newTask = new Task(generatedId, taskTitle, false);
+
+                                // Menyimpan data ke Firestore
+                                db.collection("tasks")
+                                        .document(generatedId) // Menggunakan ID yang di-generate
+                                        .set(newTask) // Menyimpan objek Task ke dokumen
+                                        .addOnSuccessListener(aVoid -> {
+                                            // Setelah data berhasil disimpan
+                                            taskList.add(newTask); // Tambahkan tugas ke daftar lokal
+                                            taskAdapter.notifyItemInserted(taskList.size() - 1); // Perbarui RecyclerView
+                                            System.out.println("Task added with ID: " + generatedId);
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            // Jika terjadi kesalahan saat menyimpan
+                                            System.err.println("Error adding task: " + e.getMessage());
+                                        });
+                            }
+                        }
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .create()
+                    .show();
         });
+
 
         fetchTasksFromFirestore();
 
@@ -111,16 +155,15 @@ public class MainFeatures extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         QuerySnapshot querySnapshot = task.getResult();
                         if (querySnapshot != null) {
-                            taskList.clear(); // Bersihkan list sebelum menambahkan data baru
                             for (DocumentSnapshot document : querySnapshot) {
-                                String id = document.getId(); // Dapatkan ID dokumen
-                                String title = document.getString("name_task");
+                                String id = document.getId();
+                                String title = document.getString("title");
                                 boolean isCompleted = document.getBoolean("is_complete") != null
                                         ? document.getBoolean("is_complete")
                                         : false;
 
                                 // Tambahkan tugas ke daftar
-                                taskList.add(new Task(id, title, isCompleted));
+                                taskList.add(new Task(id,title, isCompleted));
                             }
                             taskAdapter.notifyDataSetChanged(); // Perbarui RecyclerView
                         }

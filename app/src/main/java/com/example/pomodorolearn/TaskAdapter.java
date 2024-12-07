@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -34,6 +35,17 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
         holder.taskTitle.setText(task.getTitle());
 
+        // Menambahkan event listener pada layout untuk menangani klik
+        holder.itemView.setOnClickListener(v -> {
+            // Menangani klik pada item, bisa menampilkan detail tugas, ubah status, dll.
+            // Contoh: Anda bisa menampilkan Toast atau memodifikasi status tugas
+            Toast.makeText(v.getContext(), "Tugas: " + task.getTitle(), Toast.LENGTH_SHORT).show();
+
+            // Jika ingin mengubah status checklist (centang atau tidak)
+            task.setCompleted(!task.isCompleted());
+            notifyItemChanged(position);  // Update tampilan item yang diklik
+        });
+
         // Set ikon berdasarkan status selesai
         if (task.isCompleted()) {
             holder.check_circle.setImageResource(R.drawable.checklist_completed); // Ikon checklist selesai
@@ -57,7 +69,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             db.collection("tasks")
                     .document(task.getId()) // Gunakan ID unik dari tugas
-                    .update("is_complete", newStatus)
+                    .update("completed", newStatus)
                     .addOnSuccessListener(aVoid -> {
                         System.out.println("Task updated successfully in Firestore");
                     })

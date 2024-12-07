@@ -30,15 +30,15 @@ public class Task {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setTitle(String name_task) {
+        this.title = name_task;
     }
 
     public boolean isCompleted() {
         return isCompleted;
     }
 
-    public void setCompleted(boolean completed) {
-        isCompleted = completed;
+    public void setCompleted(boolean is_completed) {
+        isCompleted = is_completed;
     }
 }
