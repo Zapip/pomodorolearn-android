@@ -1,5 +1,6 @@
 package com.example.pomodorolearn;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -40,7 +42,8 @@ public class MainFeatures extends AppCompatActivity {
 
     private TextView timerDisplay, btnPomodoro, btnShortBreak, btnLongBreak;
     private Button btnPause;
-    private ImageButton btnSkip;
+    private ImageButton btnSkip, btnLogout;
+    private FirebaseAuth mAuth;
 
     private CountDownTimer timer;
     private boolean isTimerRunning = false;
@@ -65,6 +68,15 @@ public class MainFeatures extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_features);
+
+        mAuth = FirebaseAuth.getInstance();
+        // Inisialisasi ImageButton
+        btnLogout = findViewById(R.id.menu_button);
+        // Set OnClickListener untuk ImageButton
+        btnLogout.setOnClickListener(v -> {
+            // Fungsi logout Firebase
+            logout();
+        });
 
         db = FirebaseFirestore.getInstance();
 
@@ -422,5 +434,17 @@ public class MainFeatures extends AppCompatActivity {
 
     }
 
+    private void logout() {
+        // Keluar dari Firebase
+        mAuth.signOut();
+
+        // Menampilkan pesan bahwa pengguna telah logout
+        Toast.makeText(MainFeatures.this, "You have logged out", Toast.LENGTH_SHORT).show();
+
+        // Setelah logout, bisa mengarahkan pengguna ke halaman login atau aktivitas lainnya
+        Intent intent = new Intent(MainFeatures.this, LoginActivity.class);
+        startActivity(intent);
+        finish(); // Menutup aktivitas yang sedang aktif
+    }
 
 }
