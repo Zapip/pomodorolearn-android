@@ -9,7 +9,9 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/card_developers"> <!-- Pastikan drawable ini tidak memiliki background putih -->
+        android:background="@drawable/card_developers"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"> <!-- Pastikan drawable ini tidak memiliki background putih -->
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -25,7 +27,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="20dp"
-                android:src="@drawable/lopek"/>
+                android:src="@drawable/lopek" />
 
             <TextView
                 android:id="@+id/developers_name"
@@ -35,20 +37,20 @@
                 android:layout_marginStart="25dp"
                 android:layout_marginTop="31dp"
                 android:layout_toEndOf="@+id/developers_photo"
-                android:text="Nama_Dev"
                 android:fontFamily="@font/poppins_regular"
+                android:text="Nama_Dev"
                 android:textColor="#fff"
                 android:textSize="18sp" /> <!-- Ganti dp dengan sp untuk ukuran teks -->
 
             <ImageView
                 android:id="@+id/verified_logo"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="22dp"
+                android:layout_height="16dp"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="37dp"
-                android:layout_marginEnd="138dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="38dp"
+                android:layout_marginEnd="97dp"
                 android:layout_toEndOf="@+id/developers_name"
                 android:src="@drawable/group_11" />
 
@@ -76,8 +78,7 @@
                 android:fontFamily="@font/poppins_regular"
                 android:text="Quotes Developer"
                 android:textColor="#80FFFFFF"
-                android:textSize="10dp">
-            </TextView>
+                android:textSize="10dp"></TextView>
         </RelativeLayout>
     </FrameLayout>
 </androidx.cardview.widget.CardView>
