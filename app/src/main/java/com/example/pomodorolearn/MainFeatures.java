@@ -1,10 +1,12 @@
 package com.example.pomodorolearn;
 
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,6 +29,8 @@ import java.util.List;
 
 import android.content.DialogInterface;
 import android.widget.EditText;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AlertDialog;
 
 public class MainFeatures extends AppCompatActivity {
@@ -69,8 +73,10 @@ public class MainFeatures extends AppCompatActivity {
         taskRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         taskList = new ArrayList<>();
-        taskAdapter = new TaskAdapter(taskList);
+
+        taskAdapter = new TaskAdapter(taskList, this);
         taskRecyclerView.setAdapter(taskAdapter);
+
 
         findViewById(R.id.add_task_button).setOnClickListener(v -> {
             // Membuat EditText untuk input tugas
@@ -163,7 +169,7 @@ public class MainFeatures extends AppCompatActivity {
                                         : false;
 
                                 // Tambahkan tugas ke daftar
-                                taskList.add(new Task(id,title, isCompleted));
+                                taskList.add(new Task(id, title, isCompleted));
                             }
                             taskAdapter.notifyDataSetChanged(); // Perbarui RecyclerView
                         }
@@ -172,6 +178,7 @@ public class MainFeatures extends AppCompatActivity {
                     }
                 });
     }
+
 
     private void startTimer() {
         btnPause.setText("Pause");
@@ -338,4 +345,82 @@ public class MainFeatures extends AppCompatActivity {
         }
         super.onDestroy();
     }
+
+    protected void showEditDeleteDialog(Task task, int position) {
+        // Buat dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainFeatures.this);
+        builder.setTitle("Edit Task");
+
+// Layout untuk dialog
+        LinearLayout layout = new LinearLayout(MainFeatures.this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setPadding(16, 16, 16, 16);
+
+// Input untuk mengedit task
+        EditText inputTitle = new EditText(MainFeatures.this);
+        inputTitle.setHint("Edit task title");
+        inputTitle.setText(task.getTitle());
+        layout.addView(inputTitle);
+
+// Tombol Hapus
+        Button deleteButton = new Button(MainFeatures.this);
+        deleteButton.setText("Delete Task");
+        deleteButton.setBackgroundColor(Color.RED);
+        deleteButton.setTextColor(Color.WHITE);
+        layout.addView(deleteButton);
+
+        builder.setView(layout);
+
+// Set tombol simpan
+        builder.setPositiveButton("Save", (dialog, which) -> {
+            String newTitle = inputTitle.getText().toString().trim();
+            if (!newTitle.isEmpty()) {
+                // Update task di Firestore menggunakan ID task yang sudah ada
+                db.collection("tasks").document(task.getId())
+                        .update("title", newTitle)
+                        .addOnSuccessListener(aVoid -> {
+                            task.setTitle(newTitle);
+                            taskAdapter.notifyItemChanged(position);
+                            Toast.makeText(MainFeatures.this, "Task updated successfully", Toast.LENGTH_SHORT).show();
+                        })
+                        .addOnFailureListener(e -> {
+                            Toast.makeText(MainFeatures.this, "Error updating task: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        });
+            }
+        });
+
+// Set tombol Cancel
+        builder.setNegativeButton("Cancel", null);
+
+// Ambil referensi dialog
+        AlertDialog dialog = builder.create(); // Menyimpan referensi ke dialog
+
+// Aksi Tombol Hapus
+        deleteButton.setOnClickListener(v -> {
+            if (position >= 0 && position < taskList.size()) {
+                db.collection("tasks").document(task.getId())
+                        .delete()
+                        .addOnSuccessListener(aVoid -> {
+                            taskList.remove(position);
+                            taskAdapter.notifyItemRemoved(position);
+                            taskAdapter.notifyDataSetChanged();
+                            Toast.makeText(MainFeatures.this, "Task deleted successfully", Toast.LENGTH_SHORT).show();
+
+                            // Tutup dialog setelah penghapusan
+                            dialog.dismiss(); // Tutup dialog setelah penghapusan sukses
+                        })
+                        .addOnFailureListener(e -> {
+                            Toast.makeText(MainFeatures.this, "Error deleting task: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        });
+            } else {
+                Toast.makeText(MainFeatures.this, "Invalid task position", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+// Tampilkan dialog
+        dialog.show();
+
+    }
+
+
 }

@@ -3,7 +3,8 @@
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:orientation="horizontal"
-    android:padding="8dp">
+    android:padding="8dp"
+    android:clickable="false">
 
     <ImageView
         android:id="@+id/checklist"
@@ -12,12 +13,14 @@
         android:src="@drawable/check_circle" />
 
     <LinearLayout
+        android:id="@+id/task_item_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clickable="true"
-        android:focusable="true">
+        >
 
         <TextView
+            android:clickable="true"
+            android:focusable="true"
             android:id="@+id/task_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

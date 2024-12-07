@@ -1,25 +1,27 @@
 package com.example.pomodorolearn;
 
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.google.firebase.firestore.FirebaseFirestore;
-
+import com.google.firebase.firestore.DocumentReference;
 import java.util.List;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
 
     private final List<Task> taskList;
+    private final MainFeatures mainActivity; // Menambahkan referensi ke activity
 
-    public TaskAdapter(List<Task> taskList) {
+    // Constructor
+    public TaskAdapter(List<Task> taskList, MainFeatures mainActivity) {
         this.taskList = taskList;
+        this.mainActivity = mainActivity; // Menyimpan referensi activity
     }
 
     @NonNull
@@ -35,23 +37,17 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
         holder.taskTitle.setText(task.getTitle());
 
-        // Menambahkan event listener pada layout untuk menangani klik
-        holder.itemView.setOnClickListener(v -> {
-            // Menangani klik pada item, bisa menampilkan detail tugas, ubah status, dll.
-            // Contoh: Anda bisa menampilkan Toast atau memodifikasi status tugas
-            Toast.makeText(v.getContext(), "Tugas: " + task.getTitle(), Toast.LENGTH_SHORT).show();
-
-            // Jika ingin mengubah status checklist (centang atau tidak)
-            task.setCompleted(!task.isCompleted());
-            notifyItemChanged(position);  // Update tampilan item yang diklik
-        });
-
         // Set ikon berdasarkan status selesai
         if (task.isCompleted()) {
             holder.check_circle.setImageResource(R.drawable.checklist_completed); // Ikon checklist selesai
         } else {
             holder.check_circle.setImageResource(R.drawable.check_circle); // Ikon checklist belum selesai
         }
+
+        // Klik hanya pada taskTitle untuk membuka dialog edit atau hapus task
+        holder.taskTitle.setOnClickListener(v -> {
+            mainActivity.showEditDeleteDialog(task, position);
+        });
 
         // Klik untuk toggle status selesai
         holder.check_circle.setOnClickListener(v -> {
@@ -78,6 +74,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                     });
         });
     }
+
 
     @Override
     public int getItemCount() {
