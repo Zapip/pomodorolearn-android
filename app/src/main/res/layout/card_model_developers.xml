@@ -36,7 +36,7 @@
                 android:layout_marginTop="31dp"
                 android:layout_toEndOf="@+id/developers_photo"
                 android:text="Nama_Dev"
-                android:fontFamily="@font/preg"
+                android:fontFamily="@font/poppins_regular"
                 android:textColor="#fff"
                 android:textSize="18sp" /> <!-- Ganti dp dengan sp untuk ukuran teks -->
 
@@ -60,7 +60,7 @@
                 android:layout_marginStart="26dp"
                 android:layout_marginTop="4dp"
                 android:layout_toEndOf="@+id/developers_photo"
-                android:fontFamily="@font/preg"
+                android:fontFamily="@font/poppins_regular"
                 android:text="Role_Dev"
                 android:textColor="#80FFFFFF"
                 android:textSize="18sp" /> <!-- Ganti dp dengan sp untuk ukuran teks -->
@@ -73,7 +73,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="22dp"
                 android:layout_marginEnd="-1dp"
-                android:fontFamily="@font/preg"
+                android:fontFamily="@font/poppins_regular"
                 android:text="Quotes Developer"
                 android:textColor="#80FFFFFF"
                 android:textSize="10dp">

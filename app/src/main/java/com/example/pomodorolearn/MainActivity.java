@@ -48,11 +48,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerViewFeature.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         recyclerViewFeature.setAdapter(adapterFeature);
 
-        // Inisialisasi RecyclerView
-        RecyclerView recyclerView = findViewById(R.id.recyclerview_feature);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
-        recyclerView.setAdapter(adapterDevelopers);
-
         // Tombol "Mari Belajar"
         Button startButton = findViewById(R.id.but_start);
         startButton.setOnClickListener(v -> {
