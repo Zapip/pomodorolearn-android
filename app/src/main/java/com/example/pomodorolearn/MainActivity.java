@@ -1,6 +1,9 @@
 package com.example.pomodorolearn;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -45,6 +48,18 @@ public class MainActivity extends AppCompatActivity {
         recyclerViewFeature.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         recyclerViewFeature.setAdapter(adapterFeature);
 
+        // Inisialisasi RecyclerView
+        RecyclerView recyclerView = findViewById(R.id.recyclerview_feature);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
+        recyclerView.setAdapter(adapterDevelopers);
+
+        // Tombol "Mari Belajar"
+        Button startButton = findViewById(R.id.but_start);
+        startButton.setOnClickListener(v -> {
+            // Pindah ke LoginActivity
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+        });
         // Inisialisasi daftar developer
         List<model_developer> listDevelopers = new ArrayList<>();
         listDevelopers.add(new model_developer("Zafif Cuy", "UI/UX Designer", "Saya bangga menjadi bagian dari tim yang menciptakan PodomoroLearn untuk membantu Anda mencapai potensi belajar Anda yang sebenarnya. Semoga alat ini membantu Anda menjadi lebih fokus dan produktif dalam perjalanan belajar Anda!", R.drawable.lopek));

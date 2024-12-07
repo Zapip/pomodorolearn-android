@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "996610112982",
+    "project_id": "pomodorolearn-c471a",
+    "storage_bucket": "pomodorolearn-c471a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:996610112982:android:7151503e1ba706ba1c3877",
+        "android_client_info": {
+          "package_name": "com.example.pomodorolearn"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "996610112982-j2plhon9qtihuahtu5em601q1vmgr1on.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBOgoGUPrsTVMqtDR6JYwdBJ7HYyzcDrbs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "996610112982-j2plhon9qtihuahtu5em601q1vmgr1on.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
