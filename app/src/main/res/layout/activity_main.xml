@@ -51,7 +51,6 @@
                     android:layout_height="48dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:src="@drawable/hamburger"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -113,8 +112,44 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layout_constraintTop_toBottomOf="@+id/why"
-                android:layout_marginTop="15dp">
+                android:layout_marginTop="25dp">
             </androidx.recyclerview.widget.RecyclerView>
+
+            <TextView
+                android:id="@+id/pomodoro_developers"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_bold"
+                android:textColor="#fff"
+                android:text="Pengembang PomodoroLearn"
+                android:textAlignment="center"
+                android:textSize="32dp"
+                android:layout_marginTop="370dp"
+                app:layout_constraintTop_toBottomOf="@id/recyclerview_feature">
+            </TextView>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerview_developers"
+                android:layout_width="match_parent"
+                android:layout_height="381dp"
+                android:layout_marginTop="35dp"
+                app:layout_constraintTop_toBottomOf="@+id/pomodoro_developers">
+            </androidx.recyclerview.widget.RecyclerView>
+            <TextView
+                android:id="@+id/text_footer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_bold"
+                android:textColor="#80FFFFFF"
+                android:textSize="16dp"
+                android:text="Made by Kelompok1"
+                android:gravity="center"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="30dp"
+                app:layout_constraintTop_toBottomOf="@id/recyclerview_developers"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+            </TextView>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>

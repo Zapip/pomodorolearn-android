@@ -7,4 +7,7 @@
     <color name="blueLink">#4A83DA</color>
     <color name="transparent_white">#80FFFFFF</color>
     <color name="transparent">#00000000</color>
+    <color name="dark_blue">#082136</color>
+    <color name="dark_blue_2">#092237</color>
+    <color name="lighter_black">#070A0F</color>
 </resources>
